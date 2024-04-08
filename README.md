@@ -1,6 +1,6 @@
 # Tercera tarea de APA: Multiplicaciones de vectores y ortogonalidad
 
-## Nom i cognoms
+## Albert Batlló Marin
 
 El fichero `algebra/vectores.py` incluye la definición de la clase `Vector` con los
 métodos desarrollados en clase, que incluyen la construcción, representación y
@@ -76,11 +76,80 @@ Inserte a continuación una captura de pantalla que muestre el resultado de ejec
 fichero `algebra/vectores.py` con la opción *verbosa*, de manera que se muestre el
 resultado de la ejecución de los tests unitarios.
 
+![run vectores py 1](https://github.com/AlbertBatllo/APA-T3/assets/100155905/ef96a245-843a-4223-b4af-41636f6b813e)
+![image](https://github.com/AlbertBatllo/APA-T3/assets/100155905/1d402948-b642-44cf-95df-96f45864cca0)
+
 #### Código desarrollado
 
 Inserte a continuación el código de los métodos desarrollados en esta tarea, usando los
 comandos necesarios para que se realice el realce sintáctico en Python del mismo (no
 vale insertar una imagen o una captura de pantalla, debe hacerse en formato *markdown*).
+
+```
+    def __mul__(self, other):
+        """
+        Multiplicación elemento a elemento de dos vectores o vector por escalar.
+        
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6]) 
+        >>> v1 * v2
+        Vector([4, 10, 18])
+        
+        >>> v1 = Vector([1, 2, 3])
+        >>> v1 * 2
+        Vector([2, 4, 6])
+        """
+        if isinstance (other,(int, float, complex)):
+            return Vector(num*other for num in self)
+        return Vector(x*y for x,y in zip(self, other))
+    
+    __rmul__ = __mul__
+    
+    def __matmul__(self, other):
+        """
+        Producto escalar de dos vectores.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 @ v2
+        32
+        """
+        return sum(x*y for x,y in zip(self, other))
+    
+    __rmatmul__ = __matmul__
+
+    def __floordiv__(self, other):
+        """
+        Devuelve la componente tangencial paralela
+        
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 // v2
+        Vector([1.0, 2.0, 1.0])
+        """
+        m_other = sum(other ** 2 for other in other)
+        return Vector((self @ other / m_other) * i for i in other)
+    
+    __rfloordiv__ = __floordiv__
+
+    def __mod__(self, other):
+        """
+        Devuelve la componente tangencial perpendicular
+        
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 % v2
+        Vector([1.0, -1.0, 1.0])
+        """
+        return self - self // other
+    
+    __rmod__ = __mod__
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True) 
+
+```
 
 #### Subida del resultado al repositorio GitHub y *pull-request*
 
